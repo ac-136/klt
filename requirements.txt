@@ -1,0 +1,5 @@
+numpy==1.19.5
+matplotlib
+Pillow
+scipy
+opencv-python==4.1.2.30
