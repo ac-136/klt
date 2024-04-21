@@ -14,6 +14,14 @@ def harris_corner(im0):
                        qualityLevel = 0.2, 
                        minDistance = 25,  
                        blockSize = 25 )     
+  # feature_params = dict( maxCorners = 100,
+  #                     qualityLevel = 0.2, 
+  #                     minDistance = 7,  
+  #                     blockSize = 5 )   
+  # feature_params = dict( maxCorners = 100,
+  #                     qualityLevel = 0.3, 
+  #                     minDistance = 30,  
+  #                     blockSize = 25 )  
   p0 = cv2.goodFeaturesToTrack(im0, mask = None, **feature_params)
   # now corners should contain an array of (floating point) pixel locations 
   if p0 is None:

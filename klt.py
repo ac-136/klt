@@ -130,11 +130,15 @@ def drawPaths(im0color, xyt):
   plt.imshow(im0color)
   plt.show()
 
-
+# boxes_rotation, boxes_rotation_198_278
+# boxes_translation, boxes_translation_330_410
+# shapes_6dof, shapes_6dof_485_565
+# shapes_rotation, shapes_rotation_165_245
+# shapes_translation, shapes_translation_8_88
 
 DIR = "ec_data/shapes_translation/images/"
 DIR_TIME = "ec_data/shapes_translation/times.txt"
-OUTPUT_DIR = "ec_data/shapes_translation/shapes_translation.gt.txt"
+OUTPUT_DIR = "feature_tracks/shapes_translation_8_88.gt.txt"
 
 ##### Create list of images for dataset #####
 imgs_list = []
@@ -159,19 +163,19 @@ kp_xy, im0color = harris_corner(img_0)
 ##### Track keypoints over remaining images #####
 xyt = trackPoints(kp_xy, imgs_list, times)
 
-sorted_xyt = sorted(xyt, key=lambda arr: arr[0])
+# sorted_xyt = sorted(xyt, key=lambda arr: arr[0])
 
-print(len(sorted_xyt))
-print(sorted_xyt[0])
-print(sorted_xyt[81])
-print(sorted_xyt[162])
+# print(len(sorted_xyt))
+# print(sorted_xyt[0])
+# print(sorted_xyt[81])
+# print(sorted_xyt[162])
 
 # drawPaths(im0color, xyt)
 
 ##### Write to .gt.txt #####
 with open(OUTPUT_DIR, 'w') as file:
     # Iterate over the list of arrays
-    for array in sorted_xyt:
+    for array in xyt:
         # Convert the array elements to strings and join them with spaces
         array[0] = int(array[0])
         row = ' '.join(map(str, array))
