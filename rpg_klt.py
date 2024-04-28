@@ -32,8 +32,10 @@ def trackPoints(xy, imageSequence, times):
 
   for t in range(0, len(imageSequence)-1): # predict for all images except first in sequence
     # print (f't = {t}; predicting for t = {t+1}') 
+    # xy2, status, err = cv2.calcOpticalFlowPyrLK(imageSequence[t], imageSequence[t+1], xy,
+    #                                      None, winSize=(21, 21), maxLevel=1)
     xy2, status, err = cv2.calcOpticalFlowPyrLK(imageSequence[t], imageSequence[t+1], xy,
-                                         None, winSize=(21, 21), maxLevel=1)
+                                         None, winSize=(15, 15), maxLevel=2)
     xy = xy2
 
     new_xy2 = []
