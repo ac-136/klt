@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import convolve2d
 from PIL import Image 
-from feature_point import harris_corner
+from feature_point import harris_corner, find_sift
 import random
 
 random.seed(42)
@@ -106,16 +106,17 @@ def trackPoints(xy, imageSequence, times):
 
     # # for selected instants in time, display the latest image with highlighted keypoints 
     # if ((t == 0) or (t == 10) or (t == 20) or (t == 30) or (t == 40) or (t == 49)):
-    #   im2color = cv2.cvtColor(imageSequence[t+1], cv2.COLOR_GRAY2BGR)
-    #   corners = np.intp(np.round(xy2))
-        
-    #   for c in range(0, corners.shape[0]):
-    #     if movedOutFlag[c] == False:
-    #       x = corners[c][0]
-    #       y = corners[c][1]
-    #       cv2.circle(im2color, (x, y), DISPLAY_RADIUS, GREEN)
-    # #   plt.imshow(im2color)
-    # #   plt.show()
+    im2color = cv2.cvtColor(imageSequence[t+1], cv2.COLOR_GRAY2BGR)
+    corners = np.intp(np.round(xy2))
+      
+    for c in range(0, corners.shape[0]):
+      if movedOutFlag[c] == False:
+        x = corners[c][0]
+        y = corners[c][1]
+        cv2.circle(im2color, (x, y), DISPLAY_RADIUS, GREEN)
+    plt.imshow(im2color)
+    plt.savefig(os.path.join(GIF_DIR, "img_" + str(t)))
+    # plt.show()
     
   return xyt
 
@@ -124,11 +125,10 @@ def drawPaths(im0color, xyt):
 
   # Using cv2.circle to draw dots for all new points in xyt, by setting radius to 0
   for pt in xyt:
-    im0color = cv2.circle(im0color, (round(pt[0]),round(pt[1])), radius=0, color=YELLOW, thickness=1)
+    im0color = cv2.circle(im0color, (round(pt[1]),round(pt[2])), radius=0, color=YELLOW, thickness=1)
 
   print ("FINISHED: here are the paths of the tracked keypoints")
-  plt.imshow(im0color)
-  plt.show()
+  # plt.imshow(im0color)
 
 # boxes_rotation, boxes_rotation_198_278
 # boxes_translation, boxes_translation_330_410
@@ -136,51 +136,55 @@ def drawPaths(im0color, xyt):
 # shapes_rotation, shapes_rotation_165_245
 # shapes_translation, shapes_translation_8_88
 
-DIR = "ec_data/shapes_translation/images/"
-DIR_TIME = "ec_data/shapes_translation/times.txt"
-OUTPUT_DIR = "feature_tracks/shapes_translation_8_88.gt.txt"
+ROOT = "ec_data"
 
-##### Create list of images for dataset #####
-imgs_list = []
-for i, img in enumerate(os.listdir(DIR)):
-  curr_path = os.path.join(DIR, img)
-  curr_img = cv2.imread(curr_path, cv2.COLOR_BGR2GRAY)
-  imgs_list.append(curr_img)
+data_list = []
+for i, data in enumerate(os.listdir(ROOT)):
+    data_list.append(data)
 
-# Number of Images (should always be 81)
-print("Num images:", len(imgs_list))
+for d in data_list:
+    DIR = os.path.join(ROOT, d, "images")
+    DIR_TIME = os.path.join(ROOT, d, "times.txt")
+    OUTPUT_DIR = os.path.join("feature_tracks_sift", d + ".gt.txt")
+    GIF_DIR = os.path.join("gifs/", d)
 
-##### Get list of associated times #####
-with open(DIR_TIME, 'r') as file:
-    # Read the lines and store them in a list
-    times = file.readlines()
-print("Num times:", len(times))
+    ##### Create list of images for dataset #####
+    imgs_list = []
+    for i, img in enumerate(os.listdir(DIR)):
+        curr_path = os.path.join(DIR, img)
+        curr_img = cv2.imread(curr_path, cv2.COLOR_BGR2GRAY)
+        imgs_list.append(curr_img)
 
-##### Get initial keypoints #####
-img_0 = imgs_list[0]
-kp_xy, im0color = harris_corner(img_0)
+    # Number of Images (should always be 81)
+    print("Num images:", len(imgs_list))
 
-##### Track keypoints over remaining images #####
-xyt = trackPoints(kp_xy, imgs_list, times)
+    ##### Get list of associated times #####
+    with open(DIR_TIME, 'r') as file:
+        # Read the lines and store them in a list
+        times = file.readlines()
+    print("Num times:", len(times))
 
-# sorted_xyt = sorted(xyt, key=lambda arr: arr[0])
+    ##### Get initial keypoints #####
+    img_0 = imgs_list[0]
+    # kp_xy, im0color = harris_corner(img_0)
+    kp_xy, im0color = find_sift(img_0)
 
-# print(len(sorted_xyt))
-# print(sorted_xyt[0])
-# print(sorted_xyt[81])
-# print(sorted_xyt[162])
+    #### Track keypoints over remaining images #####
+    xyt = trackPoints(kp_xy, imgs_list, times)
 
-# drawPaths(im0color, xyt)
+    sorted_xyt = sorted(xyt, key=lambda arr: arr[0])
 
-##### Write to .gt.txt #####
-with open(OUTPUT_DIR, 'w') as file:
-    # Iterate over the list of arrays
-    for array in xyt:
-        # Convert the array elements to strings and join them with spaces
-        array[0] = int(array[0])
-        row = ' '.join(map(str, array))
-        # Write the row to the file
-        file.write(row + '\n')
+    # drawPaths(im0color, sorted_xyt)
+
+    ##### Write to .gt.txt #####
+    with open(OUTPUT_DIR, 'w') as file:
+        # Iterate over the list of arrays
+        for array in xyt:
+            # Convert the array elements to strings and join them with spaces
+            array[0] = int(array[0])
+            row = ' '.join(map(str, array))
+            # Write the row to the file
+            file.write(row + '\n')
 
 
 

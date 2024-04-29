@@ -1,5 +1,7 @@
 ec_data_og/
 ec_data/
 venv/
-feature_tracks/
+feature_tracks_hc/
 pose_feature_tracks/
+feature_tracks_sift/
+gifs/

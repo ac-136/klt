@@ -44,3 +44,38 @@ def harris_corner(im0):
 #   plt.imshow(im0color)
 #   plt.show()
   return corners, im0color
+
+def find_sift(im0):
+  sift = cv2.SIFT_create()
+
+  sift.setContrastThreshold(0.105)
+  sift.setEdgeThreshold(3)
+
+  kp = sift.detect(im0, None)
+
+  if kp is None:
+    print("no keypoints were found!")
+    return
+  print (f'Number of detected keypoints = {len(kp)}')
+  
+  # convert to kx2 format, where k is the number of feature points
+  corners = np.zeros((len(kp),2))
+  for i in range(len(kp)):
+    corners[i][0] = kp[i].pt[0]
+    corners[i][1] = kp[i].pt[1]
+
+  # draw a small circle at each detected point and display the result
+  im0color = cv2.cvtColor(im0, cv2.COLOR_GRAY2BGR)
+  cornersInt = np.intp(np.round(corners)) # convert to integers used for indexing 
+  for i in cornersInt:
+    x, y = i.ravel()      # returns a contiguous flattened array
+    cv2.circle(im0color, (x, y), DISPLAY_RADIUS, DISPLAY_COLOR)
+
+  # plt.imshow(im0color)
+  # plt.show()
+  # return corners, im0color
+
+# def fast():
+
+# def orb():
+
