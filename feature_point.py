@@ -71,11 +71,77 @@ def find_sift(im0):
     x, y = i.ravel()      # returns a contiguous flattened array
     cv2.circle(im0color, (x, y), DISPLAY_RADIUS, DISPLAY_COLOR)
 
+  plt.imshow(im0color)
+  plt.show()
+  return corners, im0color
+
+def find_fast(im0):
+  fast = cv2.FastFeatureDetector_create()
+  # fast.setThreshold(40)
+  # fast.setType(1)
+  fast.setThreshold(60)
+  fast.setType(2)
+
+  kp = fast.detect(im0, None)
+
+  if kp is None:
+    print("no keypoints were found!")
+    return
+  print (f'Number of detected keypoints = {len(kp)}')
+  
+  # convert to kx2 format, where k is the number of feature points
+  corners = np.zeros((len(kp),2))
+  for i in range(len(kp)):
+    corners[i][0] = kp[i].pt[0]
+    corners[i][1] = kp[i].pt[1]
+
+  # draw a small circle at each detected point and display the result
+  im0color = cv2.cvtColor(im0, cv2.COLOR_GRAY2BGR)
+  # cornersInt = np.intp(np.round(corners)) # convert to integers used for indexing 
+  # for i in cornersInt:
+  #   x, y = i.ravel()      # returns a contiguous flattened array
+  #   cv2.circle(im0color, (x, y), DISPLAY_RADIUS, DISPLAY_COLOR)
+
   # plt.imshow(im0color)
   # plt.show()
-  # return corners, im0color
+  return corners, im0color
 
-# def fast():
+def find_orb(im0):
+  orb = cv2.ORB_create()
 
-# def orb():
+  orb.setMaxFeatures(30)
+  orb.setEdgeThreshold(35)
+  orb.setFastThreshold(25)
+  orb.setNLevels(15)
 
+  # print("Edge: ", orb.getEdgeThreshold())
+  # print("Fast: ", orb.getFastThreshold())
+  # print("Level: ", orb.getFirstLevel())
+  # print("Max: ", orb.getMaxFeatures())
+  # print("N levels: ", orb.getNLevels())
+  # print("Patch: ", orb.getPatchSize())
+  # print()
+
+  kp = orb.detect(im0, None)
+
+  if kp is None:
+    print("no keypoints were found!")
+    return
+  print (f'Number of detected keypoints = {len(kp)}')
+  
+  # convert to kx2 format, where k is the number of feature points
+  corners = np.zeros((len(kp),2))
+  for i in range(len(kp)):
+    corners[i][0] = kp[i].pt[0]
+    corners[i][1] = kp[i].pt[1]
+
+  # draw a small circle at each detected point and display the result
+  im0color = cv2.cvtColor(im0, cv2.COLOR_GRAY2BGR)
+  cornersInt = np.intp(np.round(corners)) # convert to integers used for indexing 
+  for i in cornersInt:
+    x, y = i.ravel()      # returns a contiguous flattened array
+    cv2.circle(im0color, (x, y), DISPLAY_RADIUS, DISPLAY_COLOR)
+
+  plt.imshow(im0color)
+  plt.show()
+  return corners, im0color
