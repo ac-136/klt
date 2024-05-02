@@ -5,6 +5,9 @@
 * tracking of feature found using different feature detectors is adapted from this code: https://github.com/nirmal-25/Kanade-Lucas-Tomasi-KLT-feature-tracker
 * different feature tracking detectors used in feature_point.py
 
+## feature_point.py
+* code for different feature detectors including: harris corner, sift, fast, and orb
+
 ## pose_klt.py
 * uses feature tracks from klt.py using harris corner detector
 * triangulates feature tracks from 2D to 3D points based off camera parameters and pose
