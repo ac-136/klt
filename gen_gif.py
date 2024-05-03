@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-FEATURE_TRACK_DATASET = 'gif_tracks/boxes_rotation_198_278_pose.gt.txt'
+FEATURE_TRACK_DATASET = 'gif_tracks/boxes_rotation_198_278_hc.gt.txt'
 IMG_DIR = 'ec_data/boxes_rotation_198_278/images/'
-GIF_DIR = 'gifs/boxes_rotation_198_278_pose/'
+GIF_DIR = 'gifs/boxes_rotation_198_278_hc/'
 
 tracks_array = np.loadtxt(FEATURE_TRACK_DATASET)
 # print(tracks_array.shape)

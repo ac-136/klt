@@ -145,7 +145,7 @@ for i, data in enumerate(os.listdir(ROOT)):
 for d in data_list:
     DIR = os.path.join(ROOT, d, "images")
     DIR_TIME = os.path.join(ROOT, d, "times.txt")
-    OUTPUT_DIR = os.path.join("feature_tracks_orb", d + ".gt.txt")
+    OUTPUT_DIR = os.path.join("feature_tracks", d + ".gt.txt")
     GIF_DIR = os.path.join("gifs/", d)
 
     ##### Create list of images for dataset #####
@@ -166,10 +166,10 @@ for d in data_list:
 
     ##### Get initial keypoints #####
     img_0 = imgs_list[0]
-    # kp_xy, im0color = harris_corner(img_0)
+    kp_xy, im0color = harris_corner(img_0)
     # kp_xy, im0color = find_sift(img_0)
     # kp_xy, im0color = find_fast(img_0)
-    kp_xy, im0color = find_orb(img_0)
+    # kp_xy, im0color = find_orb(img_0)
 
     #### Track keypoints over remaining images #####
     xyt = trackPoints(kp_xy, imgs_list, times)
